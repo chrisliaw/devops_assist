@@ -22,6 +22,9 @@ namespace :devops do
       res = Rake::Task["devops:vcs:checkin_changes"].execute
       pmt.say "  Workspace check in done\n", color: :yellow
 
+      proceed = pmt.yes?(" Proceed with release? ") 
+      raise GitCliPrompt::UserAborted if not proceed
+
       rl = DevopsAssist::ReleaseLogger.load
 
       # select version
