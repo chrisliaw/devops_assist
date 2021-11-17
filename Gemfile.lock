@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    devops_assist (0.1.0)
+    devops_assist (0.1.2)
       git_cli
       git_cli_prompt
       gvcs
@@ -19,7 +19,7 @@ GEM
       ptools (~> 1.4.0)
       tlogger
       toolrack
-    git_cli_prompt (0.2.0)
+    git_cli_prompt (0.2.2)
       tlogger
       toolrack
       tty-prompt
@@ -40,9 +40,9 @@ GEM
     rspec-mocks (3.10.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
-    rspec-support (3.10.2)
-    tlogger (0.26.1)
-    toolrack (0.16.0)
+    rspec-support (3.10.3)
+    tlogger (0.26.3)
+    toolrack (0.17.0)
       base58
       tlogger
     tty-color (0.6.0)

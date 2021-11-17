@@ -17,7 +17,7 @@ module DevopsAssist
       if version_file.length > 1
         if block
           selVerFile = block.call(:select_version_file, version_file)
-          raise GemError, "Multiple version files found and user not selected any"
+          raise GemError, "Multiple version files found and user not selected any" if is_empty?(selVerFile)
         else
           raise GemError, "Multiple version files found. Please provide a block to select version file or make sure there is no other file named version.rb"
         end
