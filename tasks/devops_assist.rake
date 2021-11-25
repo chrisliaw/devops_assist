@@ -51,7 +51,12 @@ namespace :devops do
       # publish gem
       Rake::Task["devops:gem:publish_gem"].execute({ version: ver, pmt: pmt })
 
-      Rake::Task["devops:vcs:checkin_misc_files"].execute({ root: root, files: [selVerFile, DevopsAssist::ReleaseLogger::LOG_NAME], version: ver })
+      # following files shall change when gem is built
+      miscFiles = []
+      miscFiles << selVerFile
+      miscFiles << DevopsAssist::ReleaseLogger::LOG_NAME
+      miscFiles << 'Gemfile.lock'
+      Rake::Task["devops:vcs:checkin_misc_files"].execute({ root: root, files: miscFiles, version: ver })
       pmt.say "  Updated files during release prep have committed into version control", color: :yellow
 
       Rake::Task["devops:vcs:tag_source_code"].execute({ root: root, version: ver })

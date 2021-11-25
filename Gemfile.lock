@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    devops_assist (0.1.2)
+    devops_assist (0.1.3)
       git_cli
       git_cli_prompt
       gvcs
