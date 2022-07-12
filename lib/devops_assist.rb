@@ -10,7 +10,7 @@ require_relative 'devops_assist/gem/gem'
 require_relative 'devops_assist/version_manager'
 
 require 'toolrack'
-require 'tlogger'
+require 'teLogger'
 
 module DevopsAssist
   class Error < StandardError; end

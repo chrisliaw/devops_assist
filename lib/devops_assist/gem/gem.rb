@@ -17,10 +17,9 @@ module DevopsAssist
       if version_file.length > 1
         if block
           selVerFile = block.call(:select_version_file, version_file)
-          p selVerFile
-          raise GemError, "Multiple version files found and user not selected any" if is_empty?(selVerFile)
+          raise GemError, "Multiple version files found (#{version_file.join(", ")}) and user not selected any" if is_empty?(selVerFile)
         else
-          raise GemError, "Multiple version files found. Please provide a block to select version file or make sure there is no other file named version.rb"
+          raise GemError, "Multiple version files found (#{version_file.join(", ")}). Please provide a block to select version file or make sure there is no other file named version.rb"
         end
       else
         selVerFile = version_file.first
@@ -121,7 +120,8 @@ module DevopsAssist
     private
     def logger
       if @logger.nil?
-        @logger = Tlogger.new
+        @logger = TeLogger::Tlogger.new
+        @logger.tag = :gem
       end
       @logger
     end
