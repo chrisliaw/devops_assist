@@ -70,7 +70,7 @@ module DevopsAssist
 
       # find the package
       root = opts[:root] || Dir.getwd
-      foundGem = Dir.glob("**/*-#{version}.gem")
+      foundGem = Dir.glob("**/*-#{version}*.gem")
       if foundGem.length == 0
         raise GemError, "No built gem found."
       elsif foundGem.length > 1
