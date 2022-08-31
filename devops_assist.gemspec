@@ -31,7 +31,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency 'toolrack'
-  #spec.add_dependency 'tlogger'
   spec.add_dependency 'teLogger'
   spec.add_dependency 'tty-prompt'
 
