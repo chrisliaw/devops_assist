@@ -5,4 +5,8 @@ RSpec.describe DevopsAssist do
     expect(DevopsAssist::VERSION).not_to be nil
   end
 
+  it 'prompts possible versions' do
+
+  end
+
 end
