@@ -15,7 +15,7 @@ namespace :devops do
       root = Dir.getwd
 
       # let's mark the session to allow automated context switching
-      ENV[DevopsAssist::EnvKeyGemReleasing] = true
+      ENV[DevopsAssist::EnvKeyGemReleasing] = "true"
 
       gemName = find_gem_name(root)
 
