@@ -40,7 +40,7 @@ module DevopsAssist
         case vsel
         when "Custom"
           vsel = pmt.ask("  Please provide custom version no:", required: true) 
-        when vers[-1]
+        when vv[-1]
           raise DevopsAssist::Error, "  Aborted. Have a nice day! " 
         end
 
