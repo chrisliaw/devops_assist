@@ -15,6 +15,10 @@ require 'teLogger'
 module DevopsAssist
   class Error < StandardError; end
   # Your code goes here...
+
+  EnvKey = "DEVOPS_ASSIST"
+  EnvKeyGemReleasing = "#{EnvKey}_GEM_RELEASING"
+
 end
 
 # load the rake tasks

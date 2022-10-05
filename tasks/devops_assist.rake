@@ -14,6 +14,9 @@ namespace :devops do
 
       root = Dir.getwd
 
+      # let's mark the session to allow automated context switching
+      ENV[DevopsAssist::EnvKeyGemReleasing] = true
+
       gemName = find_gem_name(root)
 
       pmt.say "  Starting gem release for gem #{gemName}", color: :yellow
@@ -67,6 +70,7 @@ namespace :devops do
     rescue GitCliPrompt::UserAborted, GitCliPrompt::UserChangedMind
     rescue Exception => ex
       STDERR.puts ex.message
+      STDOUT.puts "\n\nAborted\n"
       #STDERR.puts ex.backtrace.join('\n')
     end
 
