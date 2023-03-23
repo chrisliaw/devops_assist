@@ -34,40 +34,45 @@ namespace :devops do
       pmt = args[:pmt]
       version = args[:version]
 
-      ans = pmt.yes?("  Proceed to publish the gem to Rubygems?")
-      if ans
-        res, tg, out = publish_gem(version) do |*args|
-          ops = args.first
-          case ops
-          when :multiple_rubygems_account
-            acct = args[1]
-            selAct = pmt.select("  Please select one of the Rubygems credential to release:") do |menu|
-              
-              acct.each do |k,v|
-                menu.choice k, k
+      begin
+        ans = pmt.yes?("  Proceed to publish the gem to Rubygems?")
+        if ans
+          res, tg, out = publish_gem(version) do |*args|
+            ops = args.first
+            case ops
+            when :multiple_rubygems_account
+              acct = args[1]
+              selAct = pmt.select("  Please select one of the Rubygems credential to release:") do |menu|
+
+                acct.each do |k,v|
+                  menu.choice k, k
+                end
+
+                menu.choice "Skip", :skip
+                menu.choice "Quit", :quit
+
               end
 
-              menu.choice "Skip", :skip
-              menu.choice "Quit", :quit
+              raise DevopsAssist::Error, " Aborted. Have a nice day " if selAct == :quit
 
+              selAct
             end
-            
-            raise DevopsAssist::Error, " Aborted. Have a nice day " if selAct == :quit
-
-            selAct
           end
+
+          pmt.say("  Gem publishing is skipped", color: :yellow) if res == :skipped
+
+          if res.respond_to?(:success?)
+            if res.success?
+              pmt.say "  Gem published!\n", color: :yellow
+            else
+              pmt.say "  Gem publishing failed. Return message :\n#{out}", color: :red
+            end
+          end
+
         end
 
-        pmt.say("  Gem publishing is skipped", color: :yellow) if res == :skipped
-
-        if res.respond_to?(:success?)
-          if res.success?
-            pmt.say "  Gem published!\n", color: :yellow
-          else
-            pmt.say "  Gem publishing failed. Return message :\n#{out}", color: :red
-          end
-        end
-
+      rescue Exception => ex
+        pmt.error "Pushing to Rubygems failed. Error was : #{ex.message}\n\nPlease manually release to Rubygems"
       end
 
     end
