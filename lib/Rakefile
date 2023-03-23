@@ -4,6 +4,5 @@
 
 path = File.expand_path(File.dirname(__FILE__))
 Dir.glob("#{path}/../tasks/**/*.rake").each { |f| 
-  #p f
   import f 
 }

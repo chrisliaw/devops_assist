@@ -9,8 +9,7 @@ gem "rake", "~> 13.0"
 
 gem "rspec", "~> 3.0"
 
-#gem "git_cli", path: '../../git/git_cli'
-#gem "git_cli_prompt", path: '../../git/git_cli_prompt'
+#gem "git_cli", git: "git_cli", branch: "master"
+#gem "git_cli_prompt", git: "git_cli_prompt", branch: "master"
 #
-#gem 'toolrack', path: '../../WIP/toolrack'
 

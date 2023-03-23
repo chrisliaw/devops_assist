@@ -7,7 +7,11 @@ namespace :devops do
 
   desc "Release gem file project"
   task :release do
- 
+
+    if DevopsAssist.is_debug_mode?
+      STDOUT.puts "\n *********** DEBUG MODE ACTIVATED *************\n\n"
+    end
+
     begin
 
       pmt = TTY::Prompt.new
@@ -21,6 +25,7 @@ namespace :devops do
 
       pmt.say "  Starting gem release for gem #{gemName}", color: :yellow
 
+      DevopsAssist.debug "About to execute VCS Checkin"
       # check in source code
       res = Rake::Task["devops:vcs:checkin_changes"].execute
       pmt.say "  Workspace check in done\n", color: :yellow
@@ -67,11 +72,11 @@ namespace :devops do
 
       Rake::Task["devops:vcs:push_source_code"].execute({ root: root, pmt: pmt })
 
-    rescue GitCliPrompt::UserAborted, GitCliPrompt::UserChangedMind
+    rescue GitCliPrompt::UserAborted, GitCliPrompt::UserChangedMind, TTY::Reader::InputInterrupt
     rescue Exception => ex
       STDERR.puts ex.message
+      STDERR.puts ex.backtrace.join('\n') if DevopsAssist.is_debug_mode?
       STDOUT.puts "\n\nAborted\n"
-      #STDERR.puts ex.backtrace.join('\n')
     end
 
   end
