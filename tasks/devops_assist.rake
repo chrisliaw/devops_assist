@@ -65,10 +65,10 @@ namespace :devops do
       # If error expected the scripts stops here
       Rake::Task["build"].execute
 
-      ## Record the version number in the log files so next run system 
-      ## will know what version numner to propose
-      #rl = DevopsAssist::ReleaseLogger.load
-      #rl.log_release(gemName, ver)
+      # Record the version number in the log files 
+      # for reporting traceability
+      rl = DevopsAssist::ReleaseLogger.load
+      rl.log_release(gemName, ver)
       #pmt.say "  Release version number is logged after successful test built", color: :yellow
 
       ## If successfully built, following files shall be changed
