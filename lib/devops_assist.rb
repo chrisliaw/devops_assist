@@ -5,7 +5,7 @@ require_relative 'devops_assist/release_log/release_log'
 
 require_relative 'devops_assist/vcs/git/cli_prompt'
 
-require_relative 'devops_assist/gem/gem'
+require_relative 'devops_assist/gem/gem_utils'
 
 require_relative 'devops_assist/version_manager'
 

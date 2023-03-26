@@ -3,7 +3,7 @@ require_relative '../lib/devops_assist'
 
 require 'tty/prompt'
 
-include DevopsAssist::Gem
+#include DevopsAssist::Gem
 include TR::VUtils
 
 namespace :devops do
@@ -14,7 +14,9 @@ namespace :devops do
 
       root = Dir.getwd
 
-      selVerFile = update_gem_version(root, args) do |*args|
+      gu = GemUtils.new(root)
+
+      selVerFile = gu.update_gem_version(args) do |*args|
         ops = args.first
         case ops
         when :select_version_file

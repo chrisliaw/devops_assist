@@ -1,18 +1,19 @@
 
 require 'yaml'
 
-require_relative 'gemspec'
-
 module DevopsAssist
-  module Gem
+  class GemUtils
     include TR::CondUtils
-    include Gemspec
 
-    class GemError < StandardError; end
+    class GemUtilsError < StandardError; end
 
-    def update_gem_version(root, newVersion, &block)
+    def initialize(gemRoot)
+      @root = gemRoot
+    end
 
-      version_file = find_gem_version_file(root)
+    def update_gem_version(newVersion, &block)
+
+      version_file = find_gem_version_file
 
       if version_file.length > 1
         if block
@@ -25,7 +26,7 @@ module DevopsAssist
         selVerFile = version_file.first
       end
 
-      tmpFile = File.join(File.dirname(selVerFile),"version.rb.tmp")
+      tmpFile = File.join(File.dirname(selVerFile),"version-da.bak")
       FileUtils.mv(selVerFile,tmpFile)
 
       File.open(selVerFile,"w") do |f|
@@ -40,20 +41,35 @@ module DevopsAssist
         end
       end
 
-      FileUtils.rm tmpFile
-
       selVerFile
 
     end
 
-    def find_gem_version_file(root)
-      if is_empty?(root)
-         raise GemError, "Root path '#{root}' to find_gem_version_file is empty"
-      else
-        Dir.glob(File.join(root,"**/version.rb"))
+    def restore_backup_verfile
+      back = Dir.glob(File.join(@root,"**/*.version-da.bak"))
+      if not back.empty?
+        sel = back.first
+        if back.length > 1
+          back[1..-1].each do |bf|
+            sel = bf if bf.mtime > sel.mtime
+          end
+        end
+
+        verFile = find_gem_version_file
+        FileUtils.mv(sel, verFile)
       end
     end
 
+    def remove_backup_verfile
+      Dir.glob(File.join(@root,"**/*.version-da.bak")).each do |f|
+        FileUtils.rm(f) if not File.file?(f)
+      end
+    end
+
+    def find_gem_version_file
+      raise GemUtilsError, "Root path '#{@root}' to find_gem_version_file is empty" if is_empty?(@root)
+      Dir.glob(File.join(@root,"**/version.rb"))
+    end
 
     def publish_gem(version, opts = { }, &block)
 
@@ -69,7 +85,7 @@ module DevopsAssist
       end
 
       # find the package
-      root = opts[:root] || Dir.getwd
+      #root = opts[:root] || Dir.getwd
       foundGem = Dir.glob("**/*-#{version}*.gem")
       if foundGem.length == 0
         raise GemError, "No built gem found."
@@ -83,7 +99,7 @@ module DevopsAssist
         targetGem = foundGem.first
       end
 
-      cmd = "cd #{root} && gem push #{targetGem} -k #{selAcct}"
+      cmd = "cd #{@root} && gem push #{targetGem} -k #{selAcct}"
       logger.tdebug :pubgem, "Command to publish gem : #{cmd}"  
       res = `#{cmd}`
       [$?, targetGem, res]
@@ -116,12 +132,34 @@ module DevopsAssist
 
     end
 
+    def gem_name
+      gemspec.name
+    end
+
+    def gem_version_string
+      gem_version.version
+    end
+
+    def gem_version
+      gemspec.version
+    end
+
+    def gemspec
+      raise GemUtilsError, "Root path is not given" if is_empty?(@root)
+
+      if @_gemSpec.nil?
+        @_gemSpec = ::Gem::Specification.load(Dir.glob(File.join(@root,"*.gemspec")).first)
+        raise GemUtilsError, "Cannot find gemspec from #{@root}" if @_gemSpec.nil?
+      end
+
+      @_gemSpec
+    end
 
     private
     def logger
       if @logger.nil?
         @logger = TeLogger::Tlogger.new
-        @logger.tag = :gem
+        @logger.tag = :gem_utils
       end
       @logger
     end
