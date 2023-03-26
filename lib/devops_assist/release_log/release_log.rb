@@ -23,7 +23,7 @@ module DevopsAssist
       raise ReleaseLogError, "Release name cannot be empty" if is_empty?(relName)
       raise ReleaseLogError, "Version cannot be empty" if is_empty?(version)
 
-      raise ReleaseLogError, "Version '#{version}' already in the log file for release '#{relName}'" if is_version_exist?(version, relName)
+      #raise ReleaseLogError, "Version '#{version}' already in the log file for release '#{relName}'" if is_version_exist?(version, relName)
 
       rec = { version: version, timestamp: Time.now.to_f }
       if block
