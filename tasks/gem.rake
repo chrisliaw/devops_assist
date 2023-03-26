@@ -38,7 +38,7 @@ namespace :devops do
 
       ans = pmt.yes?("  Proceed to publish the gem to Rubygems?")
       if ans
-        res, tg, out = publish_gem(version) do |*args|
+        res, tg, out = GemUtils.publish_gem(version) do |*args|
           ops = args.first
           case ops
           when :multiple_rubygems_account

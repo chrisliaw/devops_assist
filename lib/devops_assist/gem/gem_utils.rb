@@ -52,7 +52,7 @@ module DevopsAssist
       Dir.glob(File.join(@root,"**/version.rb"))
     end
 
-    def publish_gem(version, opts = { }, &block)
+    def self.publish_gem(version, opts = { }, &block)
 
       cred = find_rubygems_api_key
 
@@ -66,7 +66,7 @@ module DevopsAssist
       end
 
       # find the package
-      #root = opts[:root] || Dir.getwd
+      root = opts[:root] || Dir.getwd
       foundGem = Dir.glob("**/*-#{version}*.gem")
       if foundGem.length == 0
         raise GemError, "No built gem found."
@@ -80,7 +80,7 @@ module DevopsAssist
         targetGem = foundGem.first
       end
 
-      cmd = "cd #{@root} && gem push #{targetGem} -k #{selAcct}"
+      cmd = "cd #{root} && gem push #{targetGem} -k #{selAcct}"
       logger.tdebug :pubgem, "Command to publish gem : #{cmd}"  
       res = `#{cmd}`
       [$?, targetGem, res]
