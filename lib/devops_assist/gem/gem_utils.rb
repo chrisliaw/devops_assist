@@ -41,29 +41,10 @@ module DevopsAssist
         end
       end
 
+      FileUtils.rm(tmpFile)
+
       selVerFile
 
-    end
-
-    def restore_backup_verfile
-      back = Dir.glob(File.join(@root,"**/*.version-da.bak"))
-      if not back.empty?
-        sel = back.first
-        if back.length > 1
-          back[1..-1].each do |bf|
-            sel = bf if bf.mtime > sel.mtime
-          end
-        end
-
-        verFile = find_gem_version_file
-        FileUtils.mv(sel, verFile)
-      end
-    end
-
-    def remove_backup_verfile
-      Dir.glob(File.join(@root,"**/*.version-da.bak")).each do |f|
-        FileUtils.rm(f) if not File.file?(f)
-      end
     end
 
     def find_gem_version_file

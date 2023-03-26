@@ -19,13 +19,13 @@ namespace :devops do
   desc "Release gem file project"
   task :release do
  
+    root = Dir.getwd
+    gu = GemUtils.new(root)
     begin
 
       pmt = TTY::Prompt.new
 
-      root = Dir.getwd
 
-      gu = GemUtils.new(root)
       # let's mark the session to allow automated context switching
       ENV[DevopsAssist::EnvKeyGemReleasing] = "true"
 
@@ -57,7 +57,7 @@ namespace :devops do
       res = Rake::Task["devops:vcs:checkin_changes"].execute
       pmt.say "  Workspace check in done\n", color: :yellow
 
-      proceed = pmt.yes?(" Proceed with release? ") 
+      proceed = pmt.yes?(" Proceed to build the gem? ") 
       raise GitCliPrompt::UserAborted if not proceed
 
 
@@ -65,13 +65,11 @@ namespace :devops do
       # If error expected the scripts stops here
       Rake::Task["build"].execute
 
-      raise RuntimeException, "exception test" if true
-      
-      # Record the version number in the log files so next run system 
-      # will know what version numner to propose
-      rl = DevopsAssist::ReleaseLogger.load
-      rl.log_release(gemName, ver)
-      pmt.say "  Release version number is logged after successful test built", color: :yellow
+      ## Record the version number in the log files so next run system 
+      ## will know what version numner to propose
+      #rl = DevopsAssist::ReleaseLogger.load
+      #rl.log_release(gemName, ver)
+      #pmt.say "  Release version number is logged after successful test built", color: :yellow
 
       ## If successfully built, following files shall be changed
       #miscFiles = []
@@ -96,7 +94,7 @@ namespace :devops do
       # 2 log entries in Git for each build, which the 2nd (latest) 
       # log is just about the version updates (version pre 0.4.x way)
       #
-      Rake::Task["build"].execute
+      #Rake::Task["build"].execute
 
       #rl.log_release(gemName, ver)
       #pmt.say "  Release version number is logged", color: :yellow
@@ -122,7 +120,7 @@ namespace :devops do
     rescue Exception => ex
       STDERR.puts ex.message
       STDOUT.puts "\n\nAborted\n"
-      STDERR.puts ex.backtrace.join('\n')
+      #STDERR.puts ex.backtrace.join('\n')
     end
 
   end
