@@ -137,12 +137,16 @@ module DevopsAssist
     end
 
     private
-    def logger
+    def self.logger
       if @logger.nil?
         @logger = TeLogger::Tlogger.new
         @logger.tag = :gem_utils
       end
       @logger
+    end
+
+    def logger
+      self.class.logger
     end
 
     def self.find_rubygems_api_key
