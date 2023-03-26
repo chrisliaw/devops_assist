@@ -87,7 +87,7 @@ module DevopsAssist
 
     end
 
-    def publish_gem_file(gemfile, opts = { }, &block)
+    def self.publish_gem_file(gemfile, opts = { }, &block)
 
       cred = find_rubygems_api_key
 
@@ -145,7 +145,7 @@ module DevopsAssist
       @logger
     end
 
-    def find_rubygems_api_key
+    def self.find_rubygems_api_key
       if TR::RTUtils.on_windows?
         credFile = File.join(ENV['USERPROFILE'],".gem","credentials")
       else
