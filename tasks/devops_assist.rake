@@ -25,7 +25,6 @@ namespace :devops do
 
       pmt = TTY::Prompt.new
 
-
       # let's mark the session to allow automated context switching
       ENV[DevopsAssist::EnvKeyGemReleasing] = "true"
 
@@ -36,7 +35,7 @@ namespace :devops do
       # select version 
       #ver = DevopsAssist::VersionManager.prompt_version(gemName, rl.last_version_number(gemName))
       ver = DevopsAssist::VersionManager.prompt_version(gemName, gu.gem_version_string)
-      pmt.say "  Version no. '#{ver}' chosen", color: :yellow
+      pmt.say "  Version '#{ver}' is chosen", color: :yellow
 
       selVerFile = gu.update_gem_version(ver) do |*args|
         ops = args.first
@@ -57,7 +56,7 @@ namespace :devops do
       res = Rake::Task["devops:vcs:checkin_changes"].execute
       pmt.say "  Workspace check in done\n", color: :yellow
 
-      proceed = pmt.yes?(" Proceed to build the gem? ") 
+      proceed = pmt.yes?(" Proceed to build the gem? ", color: :yellow) 
       raise GitCliPrompt::UserAborted if not proceed
 
 
@@ -114,6 +113,13 @@ namespace :devops do
       pmt.say "  Source code is tagged as version #{ver}", color: :yellow
 
       Rake::Task["devops:vcs:push_source_code"].execute({ root: root, pmt: pmt })
+
+      install = pmt.yes?(" Install the released gem to local environment? ")
+      if install
+        STDOUT.puts `gem install pkg/#{gemName}-#{ver}.gem`
+      end
+
+      pmt.say " Gem #{gemName} version #{ver} released successfully ", color: :green
 
     rescue GitCliPrompt::UserAborted, GitCliPrompt::UserChangedMind, TTY::Reader::InputInterrupt
       STDOUT.puts

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    devops_assist (0.3.1)
+    devops_assist (0.3.4)
       git_cli
       git_cli_prompt
       gvcs
@@ -14,35 +14,35 @@ GEM
   specs:
     base58 (0.2.3)
     diff-lcs (1.5.0)
-    git_cli (0.10.0)
+    git_cli (0.11.2)
       gvcs
       ptools (~> 1.4.0)
       teLogger
       toolrack
-    git_cli_prompt (0.3.1)
+    git_cli_prompt (0.3.2)
       teLogger
       toolrack
       tty-prompt
-    gvcs (0.1.0)
+    gvcs (0.1.1)
     pastel (0.8.0)
       tty-color (~> 0.5)
-    ptools (1.4.2)
+    ptools (1.4.3)
     rake (13.0.6)
-    rspec (3.11.0)
-      rspec-core (~> 3.11.0)
-      rspec-expectations (~> 3.11.0)
-      rspec-mocks (~> 3.11.0)
-    rspec-core (3.11.0)
-      rspec-support (~> 3.11.0)
-    rspec-expectations (3.11.1)
+    rspec (3.12.0)
+      rspec-core (~> 3.12.0)
+      rspec-expectations (~> 3.12.0)
+      rspec-mocks (~> 3.12.0)
+    rspec-core (3.12.1)
+      rspec-support (~> 3.12.0)
+    rspec-expectations (3.12.2)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.11.0)
-    rspec-mocks (3.11.1)
+      rspec-support (~> 3.12.0)
+    rspec-mocks (3.12.4)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.11.0)
-    rspec-support (3.11.1)
-    teLogger (0.2.0)
-    toolrack (0.19.1)
+      rspec-support (~> 3.12.0)
+    rspec-support (3.12.0)
+    teLogger (0.2.2)
+    toolrack (0.20.2)
       base58
     tty-color (0.6.0)
     tty-cursor (0.7.1)
