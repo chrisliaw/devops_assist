@@ -106,6 +106,7 @@ module DevopsAssist
         cmd = "cd #{root} && gem push #{targetGem} -k #{selAcct}"
         logger.tdebug :pubgemfile, "Command to publish gem : #{cmd}"  
         res = `#{cmd}`
+        $stdin.gets while $stdin.ready? # to clear out any remaining input entry in the event publish operation failed
         [$?, res, targetGem]
       else
         raise GemError, "Given Gemfile '#{gemfile}' not found"

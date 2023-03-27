@@ -48,11 +48,20 @@ namespace :devops do
       end
       pmt.say "  Version file updated", color: :yellow
 
+      # Add file changed by system into git first
+      miscFiles = []
+      miscFiles << selVerFile  # version.rb
+      #miscFiles << DevopsAssist::ReleaseLogger::LOG_NAME  # release_history.yml
+      #miscFiles << 'Gemfile.lock'
+      Rake::Task["devops:vcs:checkin_misc_files"].execute({ root: root, files: miscFiles, version: ver })
+      #pmt.say "  Updated files during release prep have committed into version control", color: :yellow
+
 
       # check in source code
       # Check in must be done 1st or else the 'gem build' process will fail
       # because build will use git command. For any files that already deleted,
       # the build will failed to find the files and throw exception
+      # However, there are files that will changed after build i.e Gemfile.lock
       res = Rake::Task["devops:vcs:checkin_changes"].execute
       pmt.say "  Workspace check in done\n", color: :yellow
 

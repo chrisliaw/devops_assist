@@ -64,6 +64,9 @@ namespace :devops do
 
         if res.respond_to?(:success?)
           if res.success?
+            pmt.puts
+            pmt.puts out, color: :yellow
+            pmt.puts
             pmt.say "  Gem published!\n", color: :yellow
           else
             pmt.say "  Gem publishing failed. Return message :\n#{out}", color: :red
