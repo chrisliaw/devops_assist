@@ -14,6 +14,20 @@ namespace :devops do
 
     gu = GemUtils.new(root)
 
+    begin
+
+      pmt = TTY::Prompt.new
+
+      pmt.puts "\n\n DevopsAssist version #{DevopsAssist::VERSION}"
+      pmt.puts " Initialization of workspace"
+      pmt.puts
+
+
+    rescue TTY::Reader::InputInterrupt
+    rescue Exception => ex
+      pmt.puts "\n Aborted"
+    end
+
   end
 
   desc "Release gem file project"
@@ -35,7 +49,7 @@ namespace :devops do
       # select version 
       #ver = DevopsAssist::VersionManager.prompt_version(gemName, rl.last_version_number(gemName))
       ver = DevopsAssist::VersionManager.prompt_version(gemName, gu.gem_version_string)
-      pmt.say "  Version '#{ver}' is chosen", color: :yellow
+      pmt.say "  Version '#{ver}' is chosen\n", color: :yellow
 
       selVerFile = gu.update_gem_version(ver) do |*args|
         ops = args.first
@@ -51,7 +65,7 @@ namespace :devops do
       # Add file changed by system into git first
       miscFiles = []
       miscFiles << selVerFile  # version.rb
-      #miscFiles << DevopsAssist::ReleaseLogger::LOG_NAME  # release_history.yml
+      miscFiles << DevopsAssist::ReleaseLogger::LOG_NAME  # release_history.yml
       #miscFiles << 'Gemfile.lock'
       Rake::Task["devops:vcs:checkin_misc_files"].execute({ root: root, files: miscFiles, version: ver })
       #pmt.say "  Updated files during release prep have committed into version control", color: :yellow
@@ -63,7 +77,7 @@ namespace :devops do
       # the build will failed to find the files and throw exception
       # However, there are files that will changed after build i.e Gemfile.lock
       res = Rake::Task["devops:vcs:checkin_changes"].execute
-      pmt.say "  Workspace check in done\n", color: :yellow
+      pmt.say "  Workspace check in done\n\n", color: :yellow
 
       proceed = pmt.yes?(" Proceed to build the gem? ", color: :yellow) 
       raise GitCliPrompt::UserAborted if not proceed
