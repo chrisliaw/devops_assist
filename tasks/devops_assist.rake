@@ -140,6 +140,8 @@ namespace :devops do
       install = pmt.yes?(" Install the released gem to local environment? ")
       if install
         STDOUT.puts `gem install pkg/#{gemName}-#{ver}.gem`
+      else
+        pmt.say "\n\n Please run the gem install command manually : \n gem install pkg/#{gemName}-#{ver}.gem", color: :yellow
       end
 
       pmt.say " Gem #{gemName} version #{ver} released successfully ", color: :green
