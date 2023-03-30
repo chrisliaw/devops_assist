@@ -37,6 +37,9 @@ namespace :devops do
     gu = GemUtils.new(root)
     begin
 
+      ws = Gvcs::Workspace.new(root)
+      raise DevopsAssist::Error, "Given path '#{root}' is not a git workspace" if not ws.is_workspace?
+
       pmt = TTY::Prompt.new
 
       # let's mark the session to allow automated context switching
@@ -67,7 +70,7 @@ namespace :devops do
       miscFiles << selVerFile  # version.rb
       miscFiles << DevopsAssist::ReleaseLogger::LOG_NAME  # release_history.yml
       #miscFiles << 'Gemfile.lock'
-      Rake::Task["devops:vcs:checkin_misc_files"].execute({ root: root, files: miscFiles, version: ver })
+      Rake::Task["devops:vcs:checkin_misc_files"].execute({ root: root, files: miscFiles, version: ver, workspace: ws, pmt: pmt })
       #pmt.say "  Updated files during release prep have committed into version control", color: :yellow
 
 
@@ -80,49 +83,52 @@ namespace :devops do
       pmt.say "  Workspace check in done\n\n", color: :yellow
 
       proceed = pmt.yes?(" Proceed to build the gem? ", color: :yellow) 
-      raise GitCliPrompt::UserAborted if not proceed
-
-
-      # test build the gem, make sure there is no error
-      # If error expected the scripts stops here
-      Rake::Task["build"].execute
-
-      # Record the version number in the log files 
-      # for reporting traceability
-      rl = DevopsAssist::ReleaseLogger.load
-      rl.log_release(gemName, ver)
-      #pmt.say "  Release version number is logged after successful test built", color: :yellow
-
-      ## If successfully built, following files shall be changed
-      #miscFiles = []
-      #miscFiles << selVerFile  # version.rb
-      #miscFiles << DevopsAssist::ReleaseLogger::LOG_NAME  # release_history.yml
-      #miscFiles << 'Gemfile.lock'
-      #Rake::Task["devops:vcs:checkin_misc_files"].execute({ root: root, files: miscFiles, version: ver })
-      #pmt.say "  Updated files during release prep have committed into version control", color: :yellow
-
-      ## check in source code
-      #res = Rake::Task["devops:vcs:checkin_changes"].execute
-      #pmt.say "  Workspace check in done\n", color: :yellow
-
-      #proceed = pmt.yes?(" Proceed with release? ") 
       #raise GitCliPrompt::UserAborted if not proceed
 
-      # 
-      # Actual building the real gems build the gem
-      # Any possible reasons here error but not the one above?
-      #
-      # Main reason to do double build is to avoid to generate
-      # 2 log entries in Git for each build, which the 2nd (latest) 
-      # log is just about the version updates (version pre 0.4.x way)
-      #
-      #Rake::Task["build"].execute
+      if proceed
 
-      #rl.log_release(gemName, ver)
-      #pmt.say "  Release version number is logged", color: :yellow
+        # test build the gem, make sure there is no error
+        # If error expected the scripts stops here
+        Rake::Task["build"].execute
 
-      # publish gem
-      Rake::Task["devops:gem:publish_gem"].execute({ version: ver, pmt: pmt })
+        # Record the version number in the log files 
+        # for reporting traceability
+        rl = DevopsAssist::ReleaseLogger.load
+        rl.log_release(gemName, ver)
+        #pmt.say "  Release version number is logged after successful test built", color: :yellow
+
+        ## If successfully built, following files shall be changed
+        #miscFiles = []
+        #miscFiles << selVerFile  # version.rb
+        #miscFiles << DevopsAssist::ReleaseLogger::LOG_NAME  # release_history.yml
+        #miscFiles << 'Gemfile.lock'
+        #Rake::Task["devops:vcs:checkin_misc_files"].execute({ root: root, files: miscFiles, version: ver })
+        #pmt.say "  Updated files during release prep have committed into version control", color: :yellow
+
+        ## check in source code
+        #res = Rake::Task["devops:vcs:checkin_changes"].execute
+        #pmt.say "  Workspace check in done\n", color: :yellow
+
+        #proceed = pmt.yes?(" Proceed with release? ") 
+        #raise GitCliPrompt::UserAborted if not proceed
+
+        # 
+        # Actual building the real gems build the gem
+        # Any possible reasons here error but not the one above?
+        #
+        # Main reason to do double build is to avoid to generate
+        # 2 log entries in Git for each build, which the 2nd (latest) 
+        # log is just about the version updates (version pre 0.4.x way)
+        #
+        #Rake::Task["build"].execute
+
+        #rl.log_release(gemName, ver)
+        #pmt.say "  Release version number is logged", color: :yellow
+
+        # publish gem
+        Rake::Task["devops:gem:publish_gem"].execute({ version: ver, pmt: pmt })
+
+      end
 
       # following files shall change when gem is built
       #miscFiles = []
@@ -132,7 +138,7 @@ namespace :devops do
       #Rake::Task["devops:vcs:checkin_misc_files"].execute({ root: root, files: miscFiles, version: ver })
       #pmt.say "  Updated files during release prep have committed into version control", color: :yellow
 
-      Rake::Task["devops:vcs:tag_source_code"].execute({ root: root, version: ver })
+      Rake::Task["devops:vcs:tag_source_code"].execute({ root: root, version: ver, workspace: ws, pmt: pmt })
       pmt.say "  Source code is tagged as version #{ver}", color: :yellow
 
       Rake::Task["devops:vcs:push_source_code"].execute({ root: root, pmt: pmt })

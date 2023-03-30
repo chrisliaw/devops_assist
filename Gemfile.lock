@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    devops_assist (0.3.8)
+    devops_assist (0.3.10)
       git_cli
-      git_cli_prompt
+      git_cli_prompt (~> 0.3.3)
       gvcs
       teLogger
       toolrack
@@ -19,7 +19,7 @@ GEM
       ptools (~> 1.4.0)
       teLogger
       toolrack
-    git_cli_prompt (0.3.2)
+    git_cli_prompt (0.3.3)
       teLogger
       toolrack
       tty-prompt

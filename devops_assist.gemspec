@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'gvcs'
   spec.add_dependency 'git_cli'
-  spec.add_dependency 'git_cli_prompt'
+  spec.add_dependency 'git_cli_prompt', "~> 0.3.3"
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"

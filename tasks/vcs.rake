@@ -21,13 +21,19 @@ namespace :devops do
       root = args[:root]
       files = args[:files]
       ver = args[:version]
+      ws = args[:workspace]
+      pmt = args[:pmt]
 
-      ws = Gvcs::Workspace.new(root)
-      if ws.is_workspace?
+      begin
+      #ws = Gvcs::Workspace.new(root)
+      #if ws.is_workspace?
         ws.add_to_staging(files)
         ws.commit("  Committing file changed during release version '#{ver}'")
-      else
-        raise DevopsAssist::Error, "  Given path '#{root}' is not a repository"
+      #else
+      #  raise DevopsAssist::Error, "  Given path '#{root}' is not a repository"
+      #end
+      rescue Exception => ex
+        pmt.say "\n Error during checking in misc files. Error waas : #{ex.message}", color: :red
       end
 
     end
@@ -37,14 +43,14 @@ namespace :devops do
   
       root = args[:root]
       ver = args[:version]
+      ws = args[:workspace]
+      pmt = args[:pmt]
 
-      pmt = TTY::Prompt.new
-      msg = pmt.ask("  Tagging message : ", default: "Automated tagging of source code release version #{ver} by DevOps Assist")
-      ws = Gvcs::Workspace.new(root)
-      if ws.is_workspace?
+      begin
+        msg = pmt.ask("  Tagging message : ", default: "Automated tagging of source code release version #{ver} by DevOps Assist")
         ws.create_tag(ver, msg)
-      else
-        raise DevopsAssist::Error, "Given path '#{root}' is not a repository"
+      rescue Exception => ex
+        pmt.say "\n Error while tagging source code. Error was : #{ex.message}"
       end
 
     end
@@ -55,12 +61,16 @@ namespace :devops do
       root = args[:root]
       pmt = args[:pmt]
 
-      cli = DevopsAssist::Vcs::Git::CliPrompt.new
-      cli.push(root) do |ops, val|
-        case ops
-        when :push_info
-          pmt.say "  Source code push to remote repository '#{val[:name]}'", color: :yellow
+      begin
+        cli = DevopsAssist::Vcs::Git::CliPrompt.new
+        cli.push(root) do |ops, val|
+          case ops
+          when :push_info
+            pmt.say "  Source code push to remote repository '#{val[:name]}'", color: :yellow
+          end
         end
+      rescue Exception => ex
+        pmt.say "\n Error while pushing source code. Error was : #{ex.message}", color: :red
       end
 
     end
